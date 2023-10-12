@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express</title>
+</head>
+
+<body>
+    <a href="/">Home</a>
+    <pre>
+        What is Express?
+        ================
+        - Fast, unopinionated, minimalist web framework for Node.js
+        - Similar to Flask
+        - Most popular Node framework
+
+
+        Installation
+        ============
+        $ npm init --yes        // Create the package.json
+        $ npm install express   // Install Express
+        $ npm i express         // Install shortcut. Same as previous.
+        $ npm i express --save  // Default behavior changed. Same as previous.
+
+
+        A Simple Express Server
+        =======================
+        // app.js
+        const express = require('express.');                // Import the package from node_modules
+                                                            // Relative path looks for a .js file ( ex: require('./express') )
+        const app = express();                              // Define app to use Express
+        
+        app.listen(3000, function() {                       // Start up a server listening on port 3000
+            console.log('Server started on port 3000.');    // Callback function after server has started up
+        });                                                 // Call express.listen at the end after registering routes
+
+        $ node app.js                                       // Running the Express app
+
+
+        Routes 
+        ======
+        Route handlers are event listeners
+
+        app.get('/user', (req, resp) => {       // Route handler is passed a request and response object
+            console.log('User requested.');
+            resp.send('some data');             // Dynamically sets the the content-type of the response based on argument
+        });
+
+
+        Request-Response Cycle
+        ======================
+        Register all event listeners (routes) =>
+        Client makes a request =>
+        Express invokes first matching route handler =>
+        Response is sent back to the client
+
+        This is not completely accurate. See Middleware.
+
+
+        HTTP Verbs
+        ==========
+        app.get(path, callback)
+        app.post(path, callback)
+        app.put(path, callback)
+        app.patch(path, callback)
+        app.delete(path, callback)
+
+        
+        Nodemon
+        =======
+        - Node package 
+        - Wrapper for Node
+        - Runs and watches JS files
+        - Automatically restart the Express server on changes or crashes
+        
+        $ npm install --global nodemon          // Not really a dependency for Express so we install it globally
+        $ nodemon -v                            // Check nodemon installation version
+        $ nodemon app.js                        // Running the Express app with nodemon
+
+
+        URL Parameters
+        ==============
+        - URL parameters are prefixed with a colon (:)
+        - Parameters are added as keys or properties to the request.params object passed to route handlers
+        - Values are always strings
+
+        app.get('/user/:username', (req, resp) => {
+            return resp.send(req.params.username);
+        });
+
+
+        Use of return in the Route Handler
+        ==================================
+        - Example of not using a return
+
+        app.get('/user', (req, resp) => {
+            resp.send('Response sent.');                            // Client receives this response
+            resp.send('Response sent again');                       // Line is still executed
+            console.log('Log after responses are sent.');           // Line is still executed
+            resp.send('Response sent once more.'.toUpperCase());    // TypeError: undefined.toUpperCase()
+        });
+
+
+        Request Properties
+        ==================
+        - query string (request.query)
+        app.get('/user', (req, resp) => {
+            const {age, sort = 'ASC'} = req.query;  // Same idea as request.params
+        });                                         // Setup default values in JS
+
+        - headers (request.headers)
+        app.get('/user', (req, resp) => {
+            console.log(req.rawHeaders);            // Array of header values
+            console.log(req.headers);               // Object
+        });
+
+        - body (request.body)
+
+        // Configure Express to parse request bodies
+        const app = express();
+
+        app.use(express.json());                            // Enables parsing JSON request bodies
+        app.use(express.urlencoded({ extended: true }));    // Enables parsing for forms
+
+        app.get('/user', (req, resp) => {
+            console.log(req.body);
+        });
+
+
+        Returning JSON
+        =============
+        app.get('/users', (req, resp) => {
+            users = [
+                { name: 'Alice' },
+                { name: 'Bob' }
+            ];
+
+            return resp.send(users);    // content-type is automatically set based on data type
+            // OR                       // JSON in this example
+
+            return resp.json(users);    // content-type is JSON
+        });
+
+
+        Status Codes
+        ============
+        - Call response.status(int)
+        - Can chain .send(data) or .json(data) after
+
+        app.get('/user', (req, resp) => {
+            return resp.status(200).json('Success');
+        });
+
+
+        Middleware
+        ===========
+        - Express is a routing and middleware web framework
+        - Express apps are essentially a series of middleware function calls
+        - Middleware functions have access to the following in the request-response cycle:
+            - request
+            - response
+            - next middleware function
+        - Middleware functions can perform the following tasks:
+            - Execute any code
+            - Make changes to the request and response objects
+            - End the request-response cycle
+            - Call the next middleware function in the stack
+        - If the current middleware function does not end the request-response cycle,
+        it must call next() to pass control to the next middleware function. Otherwise,
+        the request will be left hanging.
+
+        - Note: app.use and app.METHOD are not middleware functions. They take middleware
+        functions as parameters. So the order of calling app.use and app.METHOD matters.
+        - Note: See Building an Error Handler for an example
+        
+        app.use((req, resp, next) => {      // An unmounted middleware function that is executed for every request
+            console.log('Request logged.')
+            next()                          // Calls the next middleware function
+        });
+
+
+        Error Handling
+        ==============
+        - Many approaches to error handling
+        - throw by default sends status 500
+        - throw by default sends content-type of html or plain-text
+        - throw by default suppresses error stack trace
+        - Define our own error
+
+        // app.js
+        app.get('/user', (req, resp, next) => {         // next callback
+            return resp.status(404).send('Not Found');  // Explicitly sending status with response
+            // OR
+
+            throw 'Not Found';                          // Using the default behavior of throw
+            // OR
+
+            throw new CustomError('Not Found', 404);    // Using a custom error we defined
+                                                        // Custom message and status still not used. See Building an Error Handler
+        });
+
+
+        Building an Error Handler
+        =========================
+        - Define an Error class and export and import the module
+        - Define the error middleware function after where next is called
+            - This middleware function has 4 parameters; error, request, response, next
+        - Throw and catch the error, pass the error as an argument to next
+
+        // app.js
+        const CustomError = require('./CustomError')        // import Error class
+
+        app.get('/user', (req, res, next) => {              // First middleware function; mounted.
+            try {
+                throw new CustomError('Not found', 404)
+            } catch(err) {
+                next(err);                                  // Call the next valid middleware function
+            }
+        });
+
+        app.use((err, req, res, next) => {                  // Second middleware function; unmounted. Valid to be next.
+            res.status(err.status).send(err.message);       // The error message and status is returned!
+        });
+
+        // CustomError.js                                   // Define the Error class
+        class CustomError extends Error {                   // extend Error class
+            constructor(message, status) {
+                super();                                    // call super
+                this.message = message;                     // add-on
+                this.status = status;                       // add-on
+                console.error(this.stack);                  // this.stack is inherited from Error
+            }                                               // this log can be moved to the error handler
+        }               
+        module.exports = CustomError;                       // export the module
+        
+
+        Debugging
+        =========
+        $ node --inspect-brk app.js
+        - --inspect-brk places a breakpoint on the first line of the app
+        - starts up a node debugger in the browser
+        - navigate to devtools and search for new icon (green cube)
+        - or open chrome://inspect
+
+        $ nodemon --inspect
+        - place debugger; as the breakpoint anywhere in the code
+    </pre>
+</body>
+
+</html>
