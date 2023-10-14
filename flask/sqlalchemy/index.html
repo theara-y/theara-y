@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask SQLAlchemy</title>
+</head>
+<body>
+    <pre>
+        What is SQLAlchemy?
+        ===================
+        - ORM for Python (Object Relational Mapper)
+        - ORM converts data from the database to heap data objects for an object-oriented programming language
+        - Gives an programatic interface to the database objects
+
+        Installing SQLAlchemy
+        =====================
+        - Install psycopg2-binary
+            - Needed to provide the adapter to PostgreSQL databases for SQLAlchemy to use
+            - Different adapter from different packages depending on the database used
+            $ pip install psycopg2-binary
+        - Install flask-sqlalchemy
+            $ pip install flask-sqlalchemy
+        - Import the module from flask_sqlalchemy
+        - Create an instance of SQLAlchemy
+        - Pass the Flask app instance to the init_app call for the SQLAlchemy instance
+        - Set SQLALCHEMY_DATABASE_URI to a database in the app configuration
+        - SQLALCHEMY_TRACK_MODIFICATIONS defaults to False in newer versions of Flask
+        - SQLALCHEMY_ECHO prints all SQL statements to the terminal
+            - Set to True or False to print or not print the SQL statements
+        - Remember to configure a SECRET_KEY, as most modules may require this for security
+        - Push the app context in newer versions of Flask in order for SQLAlchemy to find the application context and work.
+            - But there is another and better way of handling the application context!
+
+        //app.py
+        from flask import Flask
+        from flask_sqlalchemy import SQLAlchemy
+
+        app = Flask(__name__)
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///database_name'
+        app.config['SECRET_KEY'] = 'remember me'
+        app.app_context().push()
+
+        db = SQLAlchemy()
+        db.init_app(app)
+
+
+        db.create_all()
+
+
+        Defining a Model
+        ================
+        - The Python object the database table will convert data to and from
+        - Some column types for quick reference:
+            - Integer
+            - String(size)
+            - Text
+            - DateTime
+            - Float
+            - Boolean
+            - PickleType
+            - LargeBinary
+        - If the model needs to be updated and reflected
+            - You can drop the table and then recreate it
+                - Not realistic as the data will be deleted
+            - Use Flask Migrate
+        - Can add methods
+
+
+        // models.py
+        class User(db.Model)            // Extend db.Model
+            __tablename__ = 'users'     // Sets the table name, default is 'user' if excluded
+
+            // Defining table columns with various constraints
+            id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+            name = db.Column(db.String(50), nullable=False)
+            email = db.Column(db.String(50), unique=True)
+            age = db.Column(db.Integer, default=21)
+
+            def login(self):            // instance method
+                print(self.name + ' has logged in')
+
+            @classmethod                // class method
+            def get_users_over_20(cls, type):
+                return cls.query.filter(cls.age >= 21).all()
+
+
+        Session State Management
+        ========================
+        - Transient
+            - An instance that is not in the session
+            - Is not saved to the database
+            - Has no connection to the database
+            - Is only associated with the Mapper class (db.Model)
+            - Therefore nothing happens to the database, the data is not changed or saved
+        - Pending
+            - After using Session.add() on a transient instance
+            - Has not been flushed to the database yet
+            - Stored in Session.new
+        - Persistent
+            - The instance is in the session and in the database
+            - Acquired after flushing with Session.commit()
+            - Can also be acquired by querying the database for existing instances
+            - Stored in Session.identity_map
+            - Session.dirty tracks persistent instances that have changed but not saved to the database
+        - Deleted
+            - The instance has been deleted within a flush
+            - The transaction has not completed yet
+            - After commit, the instance will become detached
+            - After rollback, the instance will become persistent
+            - Stored in Session.deleted
+        - Detached
+            - Corresponds or previously corresponds to a record in the database
+            - Not currently in any session
+            - Has a database identity but is not verifiable
+
+        Data Manipulation
+        =================
+        - db.create_all()
+            - create all missing tables using the defined models
+        - db.drop_all()
+        - user_alice = User(name='Alice', email='alice@example.com')
+            - creating an instance of an object that extends db.Model
+        - db.session.add(user_alice)
+            - prepare insert for user_alice into the database
+        - db.session.add_all([...obj1, obj2])
+            - prepare multiple inserts
+        - db.session.commit()
+            - persist to the database
+        - db.session.rollback()
+            - cancel the transaction, remove waitting to be committed inside the transaction
+        - After updating a db.Model instance
+            - call db.commit() to persists changes
+        - Deleting
+            - User.query.filter_by(id=1).delete() and then call commit to persist change
+
+
+        Querying
+        ========
+        - Syntax for querying is either:
+            - Model.Query[.filter][.fetch]
+                - User.query.filter().all()
+            - SQLAlchemy.Session.Query(Model)[.filter][.fetch]
+                - db.session.query(User).all()
+
+        - To fetch records, terminate the chain using one of the following:
+            - .get(pk)
+                - get record by primary key
+            - .all()
+                - returns all records as a list
+            - .first()
+                - returns first record or None
+            - .one()
+                - return only one record, errors if there are 0 or more than 1
+            - .one_or_none()
+                - return only one record on None, errors if there are more than 1
+            - .count()
+            - .get_or_404(pk)
+                - For web development, get or return 404 response. 
+        - Filtering
+            - .filter_by(Column=value)
+                - User.query.filter_by(id=1).one()
+            - .filter(Model.Column op value)
+                - User.query.filter_by(User.id == 1).one()
+                - Expressions
+                    - .filter(x == y)                       // ==, !=, &lt;, &lt;=, &gt;, &gt;=
+                    - .filter(x == y, y == z)               // ',' is AND, db.or_(x, y) is OR
+                    - .filter( (x) & (y) )                  // '&' also AND, but use parentheses to avoid errors. '|' is OR
+                    - .filter(Model.Column.like('%ABC%'))   // or ilike for case-insensitive
+                    - .filter(Model.Column.in_(list))
+        - .group_by()
+            - .group_by().having()
+        - .order_by()
+        - .offset()
+        - .limit()
+        - db.session.query(User.id, User.name)              // Selecting specific columns
+            - Returns a SQLAlchemy Row! Not a tuple!
+
+
+        Join Queries
+        ============
+        - Cross join
+            db.session.query(User, Post).all()
+        - Inner Join
+            db.session.query(User, Post).join(User).all()
+        - Outer Join
+            db.session.query(User, Post).join(Post).all()
+                - User LEFT JOINS Post, or Post RIGHT JOINS User
+            db.session.query(User, Post).join(User).all()
+                - User RIGHT JOINS Post, or Post LEFT JOINS User
+
+
+        Seed File
+        =========
+        - Mainly for initializing data
+        - Use Flask Migrate instead
+
+
+        Model Relationships One-to-Many
+        ===============================
+        // models.py
+        class User(db.Model):
+            posts = db.relationship('Post')                             // model name, this to post
+
+        class Post(db.Model):
+            user_id = db.Column(db.Integer, db.ForeignKey('user.id'))   // tablename.column
+            user = db.relationship('User')                              // model name, this to user
+
+        
+        Model Relationships One-to-Many Using BackRef
+        =============================================
+        // models.py
+        class User(db.Model):
+                                                                        // removed relationship
+        class Post(db.Model):
+            user_id = db.Column(db.Integer, db.ForeignKey('user.id'))   // tablename.column
+            user = db.relationship('User', backref='posts')             // backref
+
+        
+        Model Many-to-Many Relationship
+        ===============================
+        // models.py
+        class Post(db.Model):
+            tags = db.relationship('post_tag', backref='posts')
+        class Tag(db.Model):
+            posts = db.relationship('post_tag', backref='tags')
+        class PostTag(db.Model):
+            post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+            tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True)
+
+
+        Model Many-to-Many Through Relationship
+        =======================================
+        // models.py
+        class Post(db.Model):
+            tags = db.relationship('Tag', secondary='post_tag', backref='posts')
+        class Tag(db.Model):
+            posts = db.relationship('Post', secondary='post_tag', backref='tags')
+        class PostTag(db.Model):
+            post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+            tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True)
+    </pre>
+</body>
+</html>

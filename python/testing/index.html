@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+</head>
+<body>
+    <pre>
+        assert
+        =======
+        - Built-in assert and AssertionError
+            - assert x == y, 'test failed'
+            - raise AssertionError('test failed')
+            - Stops the program when assertion fails
+            - Can be used for debugging but very basic, no feedback is given
+            - Can run python file and ignore assert statements if needed
+                - python -O app.py
+
+        
+        doctest
+        ========
+        - Tests written in documentation
+        - Same format as when running the python interpreter
+            >>> 1 + 1
+            2
+        - Running the doctests in the command line
+            python -m doctest app.py
+                - does not print if test results are ok
+            python -m doctest -v app.py
+                - will print even if test results are ok
+
+        // app.py
+        def adder(x, y):
+        """
+        >>> adder(1, 1)
+        2
+        """
+        return x + y
+
+
+        unittest
+        ========
+        - Import the unittest test module, comes as one of Python's standard libaries
+        - Create a class that extends TestCase
+        - Test methods must be prefixed with test_
+        - Running unittest
+            - Run all tests in current directory
+                python -m unittest
+            - Run all tests in a file
+                python -m unittest adder_test_case.py
+            - Run a specific test case
+                python -m unittest adder_test_case.AdderTestCase
+            - Run a specific test method
+                python -m unittest adder_test_case.AdderTestCase.test_adder
+
+        - Asserts
+            - assertEqual(a, b) / assertNotEqual(a, b)
+            - assertTrue(a) / assertFalse(a)
+            - assertIs(a, b) / assertIsNot(a, b)
+            - assertIsNone(a) / assertIsNotNone(a)
+            - assertIn(a, b) / assertNotIn(a, b)
+            - assertIsInstance(a, b) / assertNotIsInstance(a, b)
+            - assertRaises(a, fn, ...args)
+        - Can configure VSCode to run unittests
+
+        // adder_test_case.py
+        from unittest import TestCase
+
+        class AdderTestCase(TestCase):
+            def test_adder(self):
+                self.assertEqual( adder(1, 1), 2 )
+
+        
+    </pre>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinja</title>
+</head>
+
+<body>
+    <pre>
+        What are Templates?
+        ===================
+        - Generates dynamic HTML
+        - Can use variables, conditionals, loops
+        - Reduce code and create template modules with inheritance
+
+
+        What is Jinja?
+        ==============
+        - A popular template system for Python
+        - Preinstalled with Flask
+
+
+        Using Jinja
+        ===========
+        - Create a 'templates' directory
+        - Add HTML files to the 'templates' directory
+        - Import render_template function from flask
+        - Pass the name of the template file in the view
+        - Can pass values to render_template
+
+        // app.py
+        from flask import render_template
+
+        @app.route('/')
+        def root():
+            user_data = { 'name': 'Alice' }
+            return render_template('index.html', user=user_data)    //user_data assigned to user variable
+
+        
+        Flask Debug Toolbar
+        ===================
+        - Helps with debugging
+            - View HTTP request data, headers
+            - View registered routes
+            - View app configuration
+        - Only appears with template pages
+        - Python interpreter provided
+            - Click the terminal icon
+            - Enter the PIN provided at server startup
+        - PDB can also be used
+
+
+        Installing the Flask Debug Toolbar
+        ==================================
+        - Install the flask-debugtoolbar package
+            - $ pip install flask-debugtoolbar
+        - Import DebugToolbarExtension
+        - Set the SECRET_KEY in the app configuration
+        - Pass the app instance to the DebugToolbarExtension instance
+
+        // app.py
+        from flask import Flask
+        from flask_debugtoolbar import DebugToolbarExtension
+
+        app = Flask(__name__)
+        app.config['SECRET_KEY'] = 'you will never guess me'
+        toolbar = DebugToolbarExtension(app)
+
+
+        Writing a Jinja Template
+        ========================
+        - Expressions are enclosed in {{ ... }}
+            - Expressions are very similar to Python code
+                {{ 1 + 1 }}
+            - Filters can be used to modify variables
+                {{ user.name|capitalize|reverse }}
+                {# or #}
+                {{ reverse(capitalize(user.name)) }}
+
+        - Comments are enclosed in {# ... #}
+            - Comments are not included in the rendered output
+
+        - Statements are enclosed in {% ... %}
+            - Conditional
+                {% if foo %}        // Start the statement
+                    {# TODO #}      // Output to render
+                {% elif bar %}
+                    {# TODO #}      // Output to render
+                {% else %} 
+                    {# TODO #}      // Output to render
+                {% endif %}         // End the statement
+
+            - Looping
+                {% for msg in messages %}
+                    {{ msg }} 
+                {% endfor %}
+
+            - Creating reusable macros
+                {% macro macro_name(parameters) %}  // Define the macro
+                    {# TODO #}                      // Render some output when macro is called
+                {% endmacro %}
+
+                macro_name(args)                    // Call the macro
+
+            - Using a macro with the call statement
+                {% macro macro_name(parameters) %}  // Define the macro
+                    {{ caller() }}                  // Calling some anonymous caller
+                {% endmacro %}
+
+                {% call macro_name(args) %}         // Anonymously calling the macro
+                    Do you know where I am going?   // What the caller outputs
+                {% endcall %}
+
+            - Filters
+                {% filter upper %}
+                    I love coding!
+                {% endfilter %}
+
+            - Assigning values to variables
+                {% set var_name = ['value_1', 'value_2'] %}
+                {% set key, val = call_something() %}           // Can set variables by calling functions too
+
+            - Inheritance
+            // base.html                        // The parent template
+            {% block title %}{% endblock %}     // Define a block called 'title' in the parent
+                                                // Child templates will fill in the blocks
+            // some_page.html                   // The child template
+            {% extends 'base.html' %}           // Extends the parent 'base.html'
+            {% block title %}                   // Child is filling out the content the 'title' block
+                {# TODO #}
+            {% endblock %}
+
+            - Super Block Inheritance
+            // parent.html
+            {% block content %}
+                Hello Parent
+            {% endblock %}
+
+            // child.html
+            {% extends 'parent.html' %}
+            {% block content %}
+                {{ super() }}               // Hello Parent
+            {% endblock %}                  // Can go super.super() if you'd like
+
+            - Include templates from another file to render
+            {% include 'navbar.html' %}
+
+            - Imports
+            // macros.html                          // File that holds macros
+            {% macro create_input(parameters) %}    // Contains create_input macro
+                {# TODO: render inputs #}
+            {% endmacro %}
+
+            // other_file.html
+            {% import 'macros.html' as forms %}     // Import the macros file as forms
+            {{ forms.create_input(args) }}          // Call the imported macro
+                                                    // Renaming imports
+            {% from 'macros.html' import create_input as ipt %}
+
+            - Creating inner scopes with 'with'
+            {% with %}
+                {% set foo = 'Hello World!' %}
+                {{ foo }}                           // foo is only available within this scope
+            {% endwith %}
+
+            {% with = 'Hello World' %}              // Another way to set variables inside with
+
+        - Remove whitespace by placing '-' next to '%'
+            {%- if foo -%}  // Removing whitespace before and after
+            {%- if foo %}   // Removing whitespace before
+            {% if foo -%}   // Removing whitespace after
+                            // Use '+' instead of '-' to trim lines
+
+        
+        Static and CSS Styling
+        ======================
+        - Create a directory called 'static' within the project
+        - Add CSS files to the 'static' directory
+        - The CSS files can then be reference by Jinja templates to add styles
+        - Static may hold other types of static files like JS files or images
+    </pre>
+</body>
+
+</html>

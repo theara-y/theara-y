@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node</title>
+</head>
+<body>
+    <pre>
+        What is Node?
+        =============
+        - A JavaScript environment that runs server-side
+            - Uses the Chrome V8 Engine, but does not require/use Chrome
+        - Released in 2011, previously JavaScript only ran in the browser
+        - DOM does not exist, no browser, no DOM
+        - Node JS is an implementation of Javascript that runs server-side
+        - Can be used any kind of server-side JS
+            - Web applications
+            - General purpose scripting language
+
+        
+        Why Use Node?
+        =============
+        - The entire stack can be written in JavaScript (frontend/backend)
+        - There is an extensive set of add-on libraries via npm
+            - Many can be used in client-side JS
+        - Widely used
+        - Electron JS
+            - Build native apps with JS
+
+
+        Installing Node and Using Node
+        ==============================
+        - Install curl if not already installed
+            $ sudo apt-get install curl
+        - Install nvm
+            $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+        - Verify nvm
+            $ nvm -v
+        - Lists currently installed node versions
+            $ nvm ls
+        - Install the LTS or current release
+            $ nvm install --lts
+            $ nvm install node
+        - Verify node installation 
+            $ node --version
+        - Switching Node version to use
+            $ nvm use --lts
+            $ nvm use node
+            $ nvm use v8.2.1
+        - List all Node version available
+            $ nvm ls-remote
+        - Running the Node REPL
+            $ node
+        - Running a JS script with Node
+            $ node app.js
+
+        
+        Node Package Manager
+        ====================
+        - Fetch and install node packages and libaries
+        - Massive registry of add-on libraries
+        - dependency management
+        - npm comes with node
+            $ npm -v
+        - npmjs.com is a package host
+        - register with npm to publish open-source or proprietary packages
+        - $ npm init
+            - creates package.json for a project
+            - $ npm init -y, auto accepts default settings
+        - $ npm install package-name
+            - $ npm install --global package-name
+            - $ npm i package-name
+            - node_modules
+            - $ npm install
+                - install dependencies in package.json
+        - package-lock.json
+            - $ list dependencies and dependency chains
+
+
+        Imports
+        =======
+        - const binding = require('package-name')
+
+        Node Process Library
+        ====================
+        - Node provides a global object, process, for managing the current script
+        - With process
+            - Access environment variables 
+            - Access command line arguments
+            - Kill the script
+        - process.env
+            - Environment variables
+            - export SECRET_KEY=123
+            - process.SECRET_KEY
+        - process.argv
+            - Array of command-line arguments
+            - process.argv[idx]
+            - first arg is path to node
+            - second arg is path to script
+            - rest is command-line args
+        - process.exit
+            - Exits the program immediately and returns an exit code
+            - process.exit(code)
+            - 0 is no error
+
+
+        modules
+        =======
+        - Modules are the way to share code across different files in a Node project
+        - Commonly known as CommonJS Modules
+        - Export and import explicitly
+        - Specify a relative path
+            - const binding = require('./file')
+            - .js and .json extension can be excluded
+        - Export before importing
+            - module.exports = {}
+        - Can destructure the imported object
+
+
+        File System Module
+        ==================
+        - fs is built-in
+        - Provides an interface to the local file system
+        - Used to read and write files
+        - Many Node libraries functions utilize async callbacks by default
+            - Error-First pattern for parameters
+        - const fs = require('fs')
+        - fs.readFile(rel_path, encoding, callback)
+            fs.readFile('/', 'utf-8', (err, data) => {
+                if (err) exit(1);
+                console.log(data);
+            })
+        - fs.writeFile(path, data, encoding, callback)
+            fs.writeFile('/', 'hello', 'utf-8', (err, data) => {
+                if (err) exit(1);
+                console.log('success!')
+            })
+            - {encoding: 'utf-8', flag: 'a'}
+
+
+        Node vs Browser JS
+        =================
+        - Global object
+            - window in browser
+            - global in node
+        - No DOM and document in Node
+        - Access to filesystem and server processes on Node
+        - NPM libraries are isomorphic; code that can be run on client and server
+        
+
+
+
+
+    </pre>
+    
+</body>
+</html>

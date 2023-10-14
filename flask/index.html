@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask</title>
+</head>
+
+<body>
+    <ul>
+        <li><a href="jinja">Jinja</a></li>
+        <li><a href="sqlalchemy">SQLAlchemy</a></li>
+    </ul>
+    <pre>
+        What do Web Applications Need to Do?
+        ====================================
+        - Handle web requests
+        - Produce dynamic HTML
+        - Handle forms
+        - Handle cookies
+        - Connect to databases
+        - Provide authentication; login/logout
+        - Page caching
+
+        What is Flask?
+        ==============
+        - Web framework for developing a web application
+
+
+        Installing and Using Flask
+        ==========================
+        - Install flask package
+            - $ pip install flask
+
+        // app.py
+        from flask import Flask
+
+        app = Flask(__name__)
+
+
+        Running a Flask App
+        ===================
+        - By default, flask runs 'app.py' file
+        $ flask run
+        
+        - Can change the default by setting the environment variable called FLASK_APP
+        $ FLASK_APP=app.py flask run
+
+        - Two modes of the flask server
+            - Development server
+                - debug enabled
+                - stat enabled
+                    - restart server on file changes
+                - FLASK_ENV=development 
+            - Production server
+                - FLASK_ENV=production
+
+        
+        Routes and Views
+        ================
+        - A view is a function that returns a web response
+        - The view must return a string
+            - String can be a string, HTML, JSON, etc.
+        - Define the route in the decorator
+        - Decorator is followed by the decorated function
+        - Allowed HTTP methods for requests are defined within the decorator
+        - By default, methods is set to GET
+        
+        // app.py
+        app = Flask(__name__)
+
+        @app.route('/hello_world')                      // Default is GET
+        def hello_world():
+            return "&lt;h1&gt;Hello World&lt;/h1&gt;"
+
+        @app.route('/tweet', methods=['GET', 'POST'])   // Handles GET and POST requests
+        def tweet():
+            // Handle the tweet request
+
+        @app.before_request                             // Another decorator, runs before routing the request
+        def another_decorator():
+            pass
+
+
+        Interactive Debugger
+        ====================
+        - debug needs to be enabled
+        - shows error trace
+        - ability to use the Python console
+
+
+        Requests
+        ========
+        - Query string found in request.args dictionary
+        - Form data can be found in request.form dictionary
+        - Request parameters are defined the decorator and function parameters
+        - Parameters are sent as strings but can be casted
+
+        // app.py
+        from flask import request
+        ...
+
+        @app.route('/some_route/&lt;some_id&gt;')
+        @app.route('/second_route/&lt;int:some_id&gt;')
+        def some_route(some_id):
+            print(request.args['name'])
+            print(request.form['name'])
+            return some_id                  // Return a string or else there will be an error!
+
+
+        Query String vs Request Parameters?
+        ===================================
+        - Query strings are commonly used for additional options to a request
+        - Request parameters are commonly used to represent data models used in conjunction with HTTP methods
+
+        
+        What is an HTTP Redirect?
+        =========================
+        - It is an HTTP response
+        - Status code of 302
+        - The 'location' in the response header is the URL for the client to redirect to
+
+
+        Redirecting in Flask
+        ====================
+        - If using flask debug toolbar, redirects may be intercepted
+            - A link will appear in the browser to continue finish redirection
+            - To turn this off, modify the app configuration:
+                - app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+        - Import the redirect function from flask
+        - Pass a route to redirect to in the redirect function
+        - Another way to redirect is to pass the name of the function instead of the route
+            - Preferred
+            - Route names can be changed
+            - Route parameters can be passed more easily
+            - Need to import and use the url_for function
+
+        // app.py
+        from flask import redirect, url_for
+
+        @app.route('/user/&lt;int:id&gt;')
+        def get_user(id):
+            user = get_user_by_id(id)
+            return render_template('user.html', user=user)
+
+        @app.route('/redirector_one')
+        def redirector_one():
+            id = get_id_from_somewhere()
+            return redirect('/user/' + str(id))                 // Redirect with route
+                                                                // Can be annoying to update
+        @app.route('/redirector_two')
+        def redirector_two():
+            id = get_id_from_somewhere()
+            return redirect( url_for('get_user', id=id) )       // Redirect with function name
+
+
+        Message Flashing
+        ================
+        - Provides feedback to the user at the next page
+        - Useful after user has requested data changes and there is no page to show the result of their request
+        - Flash messages are commonly shown as alerts on the redirected page
+        - Add flash messages with the flash function from flask
+            - The flash function can take an optional category as its second argument
+        - Render flash messages with the get_flashed_messages function in Jinja
+
+        // app.py
+        from flask import flash
+        
+        @app.route('/here')
+        def here():
+            flash('Logout successful!', 'success')  // Add message to the list of flash messages
+            return redirect( url_for('there') )     // With 'success' as the category
+
+        @app.route('/there')
+        def there():
+            return render_template('there.html')    // Render the page, flash messages are available
+                                                    // No need to pass messages to render_template
+        // there.html
+        {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}                  // Render all flash messages and clear the list of flash messages
+            {{ msg }} {{ cat }}                     // See Jinja for defining Jinja templates
+        {% endfor %}
+
+
+        Returning JSON
+        ==============
+        - Can return a valid JSON string
+            - But the content-type is text/html in the response header
+        - Can use jsonify function from flask
+            - jsonify returns a response object with content-type of application/json
+            - jsonify(obj).get_json()
+            - jsonify(obj).content_type
+
+        // app.py
+        from flask import jsonify
+
+        @app.route('/')
+        def root():
+            return '{"name": "Alice"}'  // content-type = text/html
+            return jsonify(someObj)     // content-type = application/json
+
+
+        State
+        =====
+        - HTTP is a stateless protocol
+        - Does not save data and remember nothing
+        - Every HTTP request is its own separate request
+        - Types of browser state:
+            - State inside requests
+                - Query strings
+                - Url parameters
+                - Form data
+            - State stored in the browser
+                - LocalStorage
+                    - No expiration
+                    - Domain-specific
+                    - Storage capacity larger than cookies: 5MB - 10MB
+                    - Only readable on client-side
+                - SessionStorage
+                    - Persists until browser or tab is closed
+                    - Storage capacity larger than cookies: 5MB
+                    - Only readable on client-side
+                - Cookies
+                    - Expiration can be configured
+                    - Smaller storage capacity: 4KB
+                    - Readable on client-side and server-side
+
+
+        Cookies
+        =======
+        - Data that is stored on the browser and sent with HTTP requests
+            - In the HTTP request header as 'cookie' and delimited by ';'
+        - name/value pair of strings
+        - Originates from the server in their response headers as 'set-cookie'
+        - Composed of a website, cookie name, and cookie value
+        - View in Dev Tools > Application > Storage > Cookies in the browser
+        - Cookie examples 
+            - session id
+            - session token
+            - session time
+
+
+        Reading Cookies
+        ===============
+        - In the request object as a dictionary; request.cookies
+        - Form data sent with GET request
+            In request.args
+
+
+        Setting Cookies
+        ===============
+        - Make a response object
+        - Set the cookie on the response object
+        - With set_cookie, can configure cookie options:
+            - Expiration: Default duration is the browser session
+            - Domain: Site may have multiple domains
+            - HTTP-only: Server-side only and not accessible by JS
+        
+        @app.route('/')
+        def root():
+            html = render_template('index.html')
+            resp = make_response(html)
+            resp.set_cookie('name', 'value')
+            return resp
+
+
+        Flask Session
+        =============
+        - Flask session is a cookie called 'session'
+        - Contains multiple data
+        - Serialized and signed - not writable by client
+        - Server-side deserializes the string
+        - Data types are preserved and no longer just strings
+        - Easier than manually setting the cookie on the response object
+        - SECRET_KEY required in app configuration to use Flask session
+        - Like using a dictionary
+
+        // app.py
+        from flask import session
+
+        @app.route('/')
+        def root():                     // Same as working with dictionaries
+            session.get['score']        // Extracting 'score' from the 'session' cookie, watch out for key errors
+            session.get('score', 0)     // No error thrown if key does not exist
+            
+            session['score'] = 496      // Set data into the 'session' cookie
+                                        // Browser will store the 'session' cookie when response is received
+
+
+        Testing
+        =======
+        - Uses unittest module
+        - Can test response headers and bodies
+        - Can test session data
+        - Set TESTING = True for app configuration
+            - Python errors are returned instead of HTML errors
+        - Set DEBUG_TB_HOSTS = ['dont-show-debug-toolbar']
+            - excludes debug toolbar from the html
+            - disables redirect intercepts
+        
+        // app.py
+        from app import app
+        from unittest import TestCase
+
+        class AppTestCase(TestCase):
+            @classmethod
+            def setUpClass(cls):
+                """ Runs once before all tests """
+
+            @classmethod
+            def tearDownClass(cls):
+                """ Runs once after all tests """
+
+            def setUp(self):
+                """ Runs before each test """
+
+            def tearDown(self):
+                """ Runs after each test """
+
+            def test_get(self):
+                with app.test_client() as client:
+                    resp = client.get('/', follow_redirects=False)
+                    html = resp.get_data(as_text=True)
+                    self.assertEqual(resp.status_code, 200)
+                    self.assertIn('&lt;/div&gt;', html)
+                
+            def test_post(self):
+                with app.test_client() as client:
+                    resp = client.post('/', data={'name': 'Alice'})
+                    self.assertEqual(resp.status_code, 200)
+
+            def test_session_data(self):
+                with app.test_client() as client:
+                    with client.session_transaction() as change_session:
+                        change_session['count'] = 999
+                    resp.get('/')
+                    self.assertEqual(session['count'], 1000)
+
+
+
+
+
+
+    </pre>
+</body>
+
+</html>

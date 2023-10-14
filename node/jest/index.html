@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jest</title>
+</head>
+<body>
+    <pre>
+        What is Jest?
+        =============
+        - Jest is an open-source testing platform built by Facebook
+        - Built on top of Jasmine
+        - Easy to test in environments that aren't browser based
+        
+
+        Installing Jest and Using Jest
+        ==============================
+        $ npm i --global jest   // Install
+        $ jest -v               // Verifying installation
+        $ jest                  // Running all tests
+        $ jest NAME_OF_FILE     // Running all tests for a file
+
+
+        Organizing Tests
+        ================
+        - Name tests files as name.test.js
+        - Same directory as other tests
+        - A folder called __tests__
+        - Can configure Jests with package.json or jest.config.js
+
+        Writing Tests
+        =============
+        - Don't need to import Jest
+        - Tests defined as a callback to test function
+        - Group related tests with describe
+        - Expectations or assertions go inside callbacks for test functions
+            - Can have several expectations
+        - Matchers
+            - toEqual, toBe
+            - toBeNull, toBeUndefined, toBeDefined, toBeTruthy, toBeFalsy
+            - toBeGreaterThan, toBeGreaterThanOrEqual, toBeLessThan, toBeLessThanOrEqual
+            - toBeCloseTo
+            - toMatch
+            - toContain
+            - toThrow
+            - not // Chain before a matcher to invert the behavior
+            - any(type) // Matching expectation to type
+                - can be used inside an object
+        - beforeEach to run before each test
+            - can be placed inside or outside describe
+        - afterEach to run after each test
+        - beforeAll to run once before all tests
+        - afterAll to run once after all tests
+        - Due to scoping, can define references outside of functions in describe
+
+        // adder.test.js
+        describe('adder function', function() { 
+            beforeEach(function() {
+                // runs before each test
+            });
+
+            test('should add two numbers', function() {
+                expect(adder(1, 1)).toEqual(2);
+            });
+
+            test('should add two negative numbers', function() {
+                expect(adder(-1, -1)).toEqual(-2);
+            })
+        });
+
+    </pre>
+</body>
+</html>
