@@ -66,8 +66,18 @@
 
             test('should add two negative numbers', function() {
                 expect(adder(-1, -1)).toEqual(-2);
+
+                {
+                    prop: expect.Any(type)
+                }
             })
         });
+
+        // Prints test coverage report
+        jest --coverage
+
+        // Detect open handles
+        jest --detectOpenHandles
 
     </pre>
 </body>

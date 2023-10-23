@@ -116,6 +116,9 @@
             console.log(req.headers);               // Object
         });
 
+        -params
+        req.params['id']
+
         - body (request.body)
 
         // Configure Express to parse request bodies
@@ -156,6 +159,8 @@
 
         Middleware
         ===========
+        - Code that runs inbetween process such as the request and the 
+        - separation of concerns
         - Express is a routing and middleware web framework
         - Express apps are essentially a series of middleware function calls
         - Middleware functions have access to the following in the request-response cycle:
@@ -170,6 +175,7 @@
         - If the current middleware function does not end the request-response cycle,
         it must call next() to pass control to the next middleware function. Otherwise,
         the request will be left hanging.
+        - Passing an argument to next is treated as an error
 
         - Note: app.use and app.METHOD are not middleware functions. They take middleware
         functions as parameters. So the order of calling app.use and app.METHOD matters.
@@ -246,6 +252,105 @@
 
         $ nodemon --inspect
         - place debugger; as the breakpoint anywhere in the code
+
+
+        Building a Router
+        =================
+        - Routers allow us to logically group routes
+        - Cleaner and more maintainable code
+        - Can add prefix to a group of routes
+        - To build a router
+            - Import express
+            - Create an instance of express.Router
+            - Define routes for the router instance
+            - Export the router
+            - Use the exported router on the express server
+
+        // routes.js
+        const express = require('express')      //Import express 
+        const router = new express.Router()     //Define router
+
+        router.get('/', middlewareFunction)     //Define routes 
+
+        modules.export = router;                //Export 
+
+        // app.js
+        const routes = require('./routes.js')   //Import routes
+        app.use('/prefix', routes)              //Use routes 
+
+
+        Building Middleware
+        ===================
+        app.get('/favicon.ico', (req, res, next) => resp.sendStatus(204))
+
+        const middleware = require('./middleware')
+        app.use(middleware.logger)
+
+        // middleware.js
+        function logger(req, res, next) {
+            return next();
+        }
+
+        
+        Chaining Middlewares
+        ====================
+        app.get('/route', middle.checkLogin, (req, res, next) => res.sendStatus(200))
+
+        External Middleware
+        ===================
+        - morgan
+            - logger
+            - npm i morgan
+            - require('morgan')
+            - app.use(morgan('dev'))
+
+        Integrations test
+        =================
+        - supertest
+            - library that allows to test requests against a server
+            - built on top of superagent
+            - superagent is a node client for making http requests
+            - npm i --save-dev supertest
+                - development dependency
+            - need the app variable to be separated from the listen function
+                - const app = express()
+                - don't want server to start listening when running tests
+                - export the module: module.exports = app
+                - server.js: require('./app') listen function goes here
+                - call node server.js instead to start up
+        - test.js
+        - process.env.NODE_ENV = 'test';
+        - const request = require('supertest')
+        - require(app)
+        - cats.length = 0
+        - testing
+            - get all, get one, add, update, delete
+            - success and failures
+        
+        test('GET /route/route/', async () => {
+            const res = await request(app).get('/route')
+            expect(res.statusCode).toBe(200)
+            expect(res.body).toEqual({})            //res.body
+
+            const res = await request(app)
+                .post('/')
+                .send({}) // data to send
+
+            request.patch()
+            request.delete()
+        })
+
+        - node --inspect-brk $(which jest) --runInBand file
+            - starting line
+        - node --inspect $(which jest) --runInBand file
+            - debugger;
+
+        //app.js
+        require('nunjucks')
+        nunjucks.configure("templates", {
+            autoescape: true,
+            express: app
+            });
     </pre>
 </body>
 

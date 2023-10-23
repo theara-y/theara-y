@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript</title>
+</head>
+<body>
+    <pre>
+        Basics
+        ======
+        - var, let, const
+            - var: redeclare, reassign, function scope
+            - let: reassign, block scope
+            - const: block scope
+            - var and function hoisting
+        - if, else
+        - ||, &&, !
+        - number, string, boolean, undefined, null
+        - Math.random, Math.round, Math.ceil, Math.floor
+        - Falsy
+            - undefined
+            - 0
+            - ''
+            - false
+            - null
+            - NaN
+        - Iteration
+            - for
+            - for...of: values
+            - for...in: keys
+            - while
+            - nested
+        - Arrays
+            - how to write it normally
+            - below methods take a callback(element, index, arr)
+            - forEach() -> undefined
+            - map() -> new array
+            - filter() -> new array
+            - some() -> boolean
+            - every() -> boolean
+            - reduce( (acc, element) => {}, initial) -> acc
+        - Objects
+        - Functions
+            - anonymous functions / arrow functions 
+                - nameless
+                - () => expression
+                - () => { return expression }
+            - callback functions 
+            - first class data type
+                - can be passed as arguments
+                - can be returned
+                - can be stored in a variable
+        - Scope
+        - String templates
+            - interpolation
+            - `${expression}`
+        - Common Errors
+            - SyntaxError
+            - ReferenceError 
+            - TypeError
+        - Debugging
+            - console.log
+            - devtools
+        - try/catch/finally/throw new
+        - single threaded
+            - setTimeout
+            - setInterval
+
+
+        ES2015
+        ======
+        - ECMAScript 2015 or 
+        - 90s Browser Wars
+            - Netscape vs JScript
+            - Standardization for JS 
+        - Technical Committee 39 (TC39)
+            - Maintains and updates ECMAScript standards
+            - Previously batched larged releases
+                - Infrequent updates
+            - Published yearly
+                - Version named yearly
+                - proposal process
+                    - stage 0: strawman
+                    - stage 1: proposal
+                    - stage 2: draft
+                    - stage 3: candidate
+                    - stage 4: finished ]
+        - let, const
+        - arrow functions
+            - have their own this context
+            - do not use inside objects or when you use this
+        - rest/spread
+            - keyword arguments
+            - array-like object but no array methods
+        - rest
+            - gather remaining arguments in an array
+            - when defining a function
+                - last parameter of a function
+        - spread
+            - copy array and objects
+                - shallow copy
+            - spread into array or spread into object
+            - unit of iteration
+            - copy arrays
+                - arr2 = [...arr1]
+                - arr2 = [...arr1, newitem]
+                - arr3 = [...arr1, ...arr2]
+            - copy objects
+                - obj2 = { ...obj1}
+                - obj2 = { ...obj1, newProp: newValue }
+                - obj3 = { ...obj1, ...obj2}
+        - object enhancements
+            - object property shorthand
+                - {name, age}
+            - object method shorthand
+                - no function keyword
+                - { functionName(): {} }
+            - computer property names
+                - create an object with a key that JS can compute when defining the object
+                - { ['someString']: value }
+                - { [expression]: value }
+        - destructuring
+            - swap or extract values
+            - object destructuring
+                - {prop1, prop2, prop3} = obj1
+                - { nonexistentprop } = obj1 -> undefined
+                    - { nonexistentprop = default} = obj1
+                - { prop1, ...rest } = obj1
+                - { renameprop1: prop1 } = obj
+            - array destructuring
+                - positional
+                - [first, second, third] = arr
+                - [first, , third] = arr
+                - [first, ...last] = arr
+            - destructure function args
+                - def functionName({destructure obj}, [destructure arr])
+            - nested destructuring
+                - { prop1: {prop12, prop13} }
+            - swapping
+                - [newname1, newname2] = [oldname1, oldname2]
+        - maps
+            - obj can take any keys including unhashables
+                - keys turned into strings
+                - not a true map
+                - unordered
+                - no array methods
+                - no size or length property
+            - new Map()
+                - set(key, value)
+                    - set(unhashable, value) uses the reference of the unhashable as a key
+                    - chainable
+                - get(key)
+                - new Map([ ...[key, value] ]
+                - has()
+                - delete(key)
+                - clear()
+                - values()
+                - keys()
+                - forEach() ordered based on insertion
+                - size property
+                - for(let [key, value] of map)
+        - sets
+            - faster than arrays at checking and adding new items
+            - new Set(iterable)
+                - 'abcabc' -> 'a', 'b', 'c'
+            - add(value)
+                - chainable
+
+        ES2015 Classes
+        ==============
+        
+        Objects
+        =======
+        - const obj = {}
+        - obj.prop = val
+        - obj['prop'] = val
+        - for(let [key, value] of Object.entries(obj))
+        - obj.undefined
+        - props/keys are converted to strings
+        - obj.fn = function() {}
+        - obj = { add: function(){} }
+        - obj = { add(){} }
+        -   let obj = {
+                x: val,
+                fn: function() {
+                    this.x          // this object
+                }
+            }
+        -   function Obj(params) {
+                this.params = params;
+                this.fn = function() {  // instance method not a class method
+                    this.params;
+                }
+            }
+            const o = new Obj(params); // use the new
+                - new first creates a blank object
+                - sets the constructor this object to another
+                - pass the new object as the this context
+                - returns 'this' if the function doesn't return its own object
+        - Prototypes
+            - Special object that instances share
+            - Obj.prototype.fn = function(){} //class method
+                - polyfill
+                    - when implementation for a version does not exist, we can override the prototype function and change it manually
+        - Classes
+            - blueprint of functionality
+            - creates a prototype
+            -   class Obj extends Obj2 {
+                    constructor() {
+                        super()
+                        // validation and assignment
+                    }
+                    fn() {} // added to Obj.prototype
+                }
+            - methods is a type of function that's been defined as a property of an object
+            - extends inherits
+                - overwrite/override
+            - super calls the constructor of its parent
+                - super is required
+                    - initializes 'this'
+                    - reference error is thrown
+                    - so super should be called before this is called
+                - why isn't super auto called?
+                - so you can decide where to call it
+
+        This
+        ====
+        - this is ambiguous
+        - refers to an instance based on the context that this is called in
+            - The value of this is changed depending on how the function is executed
+        - all functions are methods that are either defined on the global object or instances
+        - 'use strict';
+            - Changes how 'this' works
+                - defining a class uses strict mode
+                - securely writing javascript
+                - prevent silent errors
+            - maybe read about this, sounds curious
+        
+        call
+        ====
+        - setting the this context for a function
+        - "call this function on this object" 
+        - const cat = { someObject }
+        - const dance = cat.dance
+        - dance.call(cat, args) // sets the cat object as this
+        - cat.dance.call(window) // this is set to window just for this call
+        - call can be found on the f.prototype!
+
+        bind
+        ====
+        - call changes this on use
+        - bind will permanently modify the this context for a function
+            - PERMANENTLY
+        - bind returns a new function called bind-on
+        - const functionWithBoundedThis = fn.bind(obj)
+        - bind(null)
+            - special case where this is not bound
+            - you don't want to bind any object
+        - can also bind arguments
+            - like a const that never changes
+            - or setting parameters with defaults
+            - where the defaults are always used
+        - const callMe = fn.bind(obj, 3.14)
+        - callMe('additional parameter')
+
+        using bind
+        ==========
+        - when using callbacks where this is not what we want the this context to be
+            - obj.addEventListener('event', callback)
+            - passing a ref to callback, not calling callback
+            - same as const fn = callback
+            - then fn(), the context of this is global
+
+        arrow functions
+        ===============
+        - why the value of this changes in objects when using the function keyword vs using an arrow function
+        - regular function creates its own this, changing the value of this
+        - arrow functions do not change the value of this
+        - don't want a new value of this
+
+
+
+
+
+
+
+
+        Asynchronous JavaScript
+        =======================
+        - JavaScript runs synchronously, but we can implement asynchronous code through the use of callbacks
+        - Examples of Asynchronous
+            - Timers
+            - AJAX
+        - Asynchronous AJAX call in JQuery
+            $.getJSON('website', response => {
+                console.log(response)
+            }, err => {
+                console.log(err)
+            })
+
+
+        What is Asynchronous? How does it work?
+        =======================================
+        - Function calls are added to the call stack
+        - When an asynchronous function is called, the function pop off the call stack and passed to the Web APIs for handling
+        - Javascript continues to run synchronous functions, adding and removing to and from the call stack
+        - In the meantime, the asynchronous function is being handled by the Web API and can be completed at any time
+        - When the Web API, completes the asynchronous function, the result is stored in the callback queue
+        - When the call stack is empty, Javascript will begin to deque the callback queue
+
+
+        What is a Promise?
+        ==================
+        - A promise is the return value of an asynchronous function
+        - It represents a value that will be determined later
+        - It may be a resolved value
+        - Or it may be a rejection, such as an error
+        - A JavaScript object
+        - Introduced in ES2015
+        - Can be in one of three states
+            - Pending - It does not have a value yet
+            - Resolved - It has successfully obtained a value
+            - Rejecetd - It has failed to obtain a value for some reason
+        - Axios requests returns a Promise
+            - axios.get(url)
+        - To access and use the resolved or rejected value, we have to chain methods to a Promise
+            - .then(callback)
+                - When the promise resolves, run the callback defined in Promise.then
+                - the resolved value can be passed to the callback
+            - .catch(callback)
+                - When the promise is rejected, run the callback defined in Promise.catch
+                - the rejected value can be passed to the callback
+            - Can return a new promise in the chained methods, to continue additional chains
+                - Avoids nested callback hell
+                - Simplifies error handling
+        
+
+        Building Your Own Promise
+        =========================
+        - Create an instance of Promise with the new keyword
+        - Promise takes a single callback function that accepts two paramaters
+            - resolve which represents Promise.then function
+                - Call resolve with the result to resolve with that then will be able to use
+            - reject which represents Promise.catch function 
+                - Call reject with the result to reject with that catch will be able to use
+
+        
+        Groups of Promises
+        ==================
+        - Promise.all
+            - Accepts an array of promises
+            - When all promises resolve, return a new promise
+            - If any promise rejects, everything is rejected
+            - Useful for executing multiple promises in parallel
+        - Promise.race
+            - Accepts an array of promises
+            - Returns the first promise to reject or reject
+
+
+        XHR requests
+        ============
+        - Ready States
+            - 0: UNSENT - Client has been created, open not yet called
+            - 1: OPENED - Open called 
+            - 2: HEADER_RECEIVED - Send called, headers and status are available
+            - 3: LOADING - Downloading, responseText has partial data
+            - 4: DONE - Operation complete
+
+        const request = new XMLHttpRequest();
+
+        request.onload = function() {
+            if(request.readyState == 4) return;
+            if(request.status >= 200 && request.status < 300) {
+                // Handle success - request.response
+            } else {
+                // Handle error based on status code
+            }
+        };
+
+        request.onerror = function() {
+            // Handle errors without status codes such as network errors 
+        };
+
+        request.open('HTTP_METHOD', 'URL');
+
+        request.send();
+
+        
+        Async
+        =====
+        - ES2017
+        - Declare Javascript function to be async
+        - Async function always return a promise
+        - Allows us to write code that looks synchronous
+        - To return errors or reject, just throw an an error and use try/catch
+        - Async object methods
+        - Async instance methods
+
+
+        Await
+        =====
+        - Used in function declared as async
+        - Pauses the execution of the async function
+        - Awaits an operation until promise is resolved or rejected
+        - sequential awaits
+            - await async functions
+        - parallel awaits
+            - let promises = async functions 
+            - await promises
+            - just use promise.all, easier to read and shorter
+
+
+    </pre>
+</body>
+</html>

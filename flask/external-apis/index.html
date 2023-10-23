@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        API Requests
+        ============
+        - Client side requests (AJAX)
+            - Ease of using AJAX libraries
+            - Doesn't involve Flask
+            - Can be faster
+        - Server side requests
+            - Bypass same-origin policy which blocks browser requests
+            - Server can store and process data
+            - Some API requires keys or authentication and authorization
+
+
+        Python requests
+        ===============
+        - pip install requests
+        - requests.get(url, params={})
+        - requests.post(url, data={}, json={})
+            - content-type of data = application/w-xxx-form-urlencoded
+                - not good for nested or complex json
+            - content-type of json = application/json
+        - response.json()
+        - response.status_code
+        - response.text
+
+
+        API Keys
+        ========
+        - Many APIs requires a key and a secret
+            - like username and password
+        - Gives access to confidential data or sensitive information
+        - Some APIs cost money to use
+        - Limits abuse
+        - API Keys ties to user of API
+        - Typically register on site to get an API Key
+        - How to use
+            - May need to include with the request
+            - Varies by API
+        - from secrets import API_KEY
+            - secrets.py
+            - do not push to remote
+
+
+        APIs
+        ====
+        - MapQuest
+        - Twilio - SMS
+        - Intellexer - Text Emoting
+
+
+        SDKs
+        ====
+        - Some APIs have SDKs
+        - Interface for using the API
+        - Instead of sending a request using requests or axios
+        - Import the SDK, and use the API functions and tools
+
+
+        Restful Apis
+        ============
+        - Get
+            - Remains in the browser history
+            - can be bookmarked and cached
+            - Data sent in the URL
+            - Repeatable
+            - Finding and filtering for data
+        - Post
+            - Does remain in history, cannot be bookmarked or cached
+            - Data sent in the request body
+            - Not repeatable
+            - Sending emails
+            - Updating data
+        - Put
+            - Not supported by forms
+            - Update an entire resource
+        - Patch 
+            - Not supported by forms
+            - Update part of a resource
+        - Delete
+            - Not supported by forms
+            - Delete a resource
+        - POST /v1/boards/board
+        
+
+        Safety and Idempotency
+        ======================
+        - Safe operations do not change data
+        - Idempotent operations are repeatable operations with the same result
+        - GET is safe and idempotent
+        - POST is not safe and is not idempotent
+        - PUT/PATCH/DELETE is not safe but are idempotent
+        - Better create routes, restful apis
+
+
+        REST
+        ====
+        - Architectural style defining constrainst for creating web services
+            - client server model
+            - statelessness
+            - cacheability
+        - APIs that adhere to these contraints are called RESTful Apis
+        - Have a base url
+        - Resource after base url
+        - Uses standard HTTP methods
+        - POST commonly responds with 201
+
+
+    </pre>
+</body>
+</html>

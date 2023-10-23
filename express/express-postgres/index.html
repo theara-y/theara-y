@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        Node SQL Ecosystem
+        ==================
+        - ORMs
+            - Sequelize
+        - Query Builders
+        - SQL Drivers
+
+        - //database.sql
+        - defines database in SQL
+        - psql < database.sql
+
+        pg
+        ==
+        - driver for postgres 
+        - npm install pg
+        - queries automatically commit
+
+        // db.js
+        const { Client } = require('pg');
+        let connectionString;
+        if (process.env.NODE_ENV === 'test') {
+            connectionString = 'postgresql:///test_db'
+        } else {
+            connectionString = 'postgresql:///real_db'
+        }
+
+        let db = new Client({ connectionString })
+
+        db.connect();
+
+        module.exports = db;
+
+        // router.js
+        const db = require('../db')
+        router.get('/', async (req, res) => {
+            try {
+                const results = await db.query(                 //selecting 
+                    'SELECT * FROM table WHERE type=$1', [$1]   //parameterize args
+                );
+
+                const results = await db.query(
+                    'INSERT INTO table (cols) VALUES ($1) RETURNING col1, col2'
+                );      // RETURNING inserted data so results.rows is not empty
+
+                return res.status(200).json(results.rows);
+            } catch(err) {
+                return next(err);
+            }
+        });
+
+
+        Testing
+        =======
+        - api testing
+        - test routes and response bodies
+            - describe each route
+
+        beforeEach(async function() {
+            let result = await db.query(
+                'INSERT SOMETHING'
+            )
+            testData = result.rows[0]
+        })
+
+        afterEach(async function() {
+            await db.query('DELETE FROM table')
+        })
+
+        afterAll(async function() {
+            await db.end()
+        })
+        
+        pg 7.18.2
+
+        One to Many
+        ===========
+        - could use two queries
+            - could make queries run in parallel if not dependent on each other
+
+        Many to Many
+        ============
+        - using a join query, left joins
+
+        Object Orientation
+        ==================
+        - Helps organize code
+        - abstraction
+            - hide implementation, easier to understand
+        - encapsulation
+            - group functionality into logical components
+        - polymorphism
+            - make similar things work simarly
+        - create a class
+            - stateless
+            - static methods
+        // models/cat.js
+        require('./db')
+        class Cat {
+            static async getAll(params) {
+                validate(params) throw errors
+                let result = db.query('SQL')
+                validate(result) throw errors 
+                return result.rows;
+            }
+        }
+
+        class Dog {
+            constructor(id, name, age) {
+                this.id = id
+            }
+            static async getAll() {
+                results.map(r => new Dog(id));
+            }
+            static async remove() {
+
+            }
+            static async save() {
+                update(this.id, this.name, this.age)
+            }
+        }
+
+        // router.js
+        await Cat.getAll()
+
+        Comparison
+        ==========
+        - simple classes, no data, static methods
+            - easier to write, fewer queries (delete)
+            - no instance method
+        - smarter class, data, instance methods
+            - attributes
+            - easier to do validation
+        - Sequelize JS ORM
+
+
+    </pre>
+</body>
+</html>

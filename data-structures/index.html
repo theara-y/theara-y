@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures</title>
+</head>
+<body>
+    <pre>
+        Map
+        ===
+        - hashmaps 
+        - key/value
+
+        Lists
+        =====
+        - Abstract data type
+        - Multiple items
+        - Insert and delete at any position
+        - Can contain duplicates
+
+        Arrays
+        ======
+        - Collection of items at sequential and equally-spaced memory
+        - O(1) retrieving
+        - O(n) searching
+        - O(n) insert - shifting items over
+        - O(n) delete
+
+        Direct Arrays / Vectors
+        =======================
+        - Same data type
+            - all numbers
+            - same string length
+        - Javascript provides typed arrays
+
+
+        Indirect Arrays
+        ===============
+        - Array of references not values
+        - Store different data types in an array
+        - Javascript uses indirect arrays 
+
+        Linked Lists
+        ============
+        - abstract data type
+        - items are not store in contiguous memory
+        - each node references another node
+            - on nothing if it is the last node
+        - rearrangeable without moving other items in memory
+        - bunch of nodes linked sequentially
+        - has a reference to head
+        - print each node
+        - find node by value
+        - append to end
+        - insert at specific position
+        - remove a node
+        - tail to make append to end O(1)
+        - next item is O(1)
+        - searching is O(n)
+        - insert and delete O(n)
+        - head and tail O(1)
+        - doubly linked list
+            - next and previous, bi-directional
+
+
+        Writing A Node
+        ==============
+        class Node {
+            constructor(val, next=null) {
+                this.val = val;
+                this.next = next;
+            }
+        }
+
+        new Node(1, new Node(2, new Node(3)));
+
+        class LinkedList {
+            constructor() {
+                this.head = null
+            }
+
+            find() {
+                while(current) {
+                    if current == val
+                    current = current.next
+                }
+            }
+
+            append() {
+                last_node.next = new Node()
+            }
+        }
+
+        List Abstract Data Type (ADT)
+        =============================
+        - Keep multiple items
+        - Insert and delete at any position
+        - Can contain duplicates
+        - Preserves the order of items
+        
+        Stacks
+        ======
+        - FILO
+        - return to previous state
+        - push, added to the top of the stack
+        - pop, removed from the top of the stack
+        - arrays, linked lists
+        - object not good
+
+        Queues
+        ======
+        - FIFO
+        - enqueue items are added to the end of the queue
+        - dequeue items are removed from the front of the queue
+        - peek() returns first item to remove but do not remove
+        - isEmpty() are there items 
+        - linked lists
+        - arrays not good
+
+        Deques
+        ======
+        - Double ended queue
+        - push, pop, shift, and unshift in O(1)
+        - appendleft, appendright, popleft, popright, peekleft, peekright, isEmpty
+
+        Priority Queue
+        ==============
+        - Item added with priority
+        - Highest priority is removed
+        - add(priority, item)
+        - poll() - remove and return highest priority
+        - unsorted/sorted O(n) using arrays, linked lists, and bidirection linked lists
+        - heaps are most efficient
+
+
+        Recursion
+        =========
+        - function that calls itself
+        - any loop can be rewritten recursively, vice versa
+        - base case that stops recursion
+        - no base case, stack overflow
+        - recursive patterns
+            - filesystems, nested directories
+            - fractals
+            - parsing
+            - nested data
+        - O(n^2) when making a new array with each call
+        - O(n) if we track the index
+
+        Hash Tables
+        ===========
+        - Maps abstract data type
+        - Wikipedia: In computing, it is a data structure that implements an associative array abstract type, a structure that can map keys to values. A hash table uses a hash function to compute an index, also called a hash code, into an array of buckets or slots from which the desired value can be found.
+        - hash function to compute an index
+        - hash function O(1)
+        - speed and wide distribution
+        - fast hashing and crypto hashing
+        - separate chaining
+        - dynamic resizing, 75% occupied
+        - set and delete calls can take longer
+        - open addressing 
+        - double hashing
+        - set is a map without values
+    </pre>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        Plaintext passwords
+        ===================
+        - Never implement
+        - Access to database leaks all passwords
+        - People reuse passwords
+
+        What is hashing?
+        ================
+        - hash function maps data of arbitrary size to fixed size
+        - determininstic - same output for the same input everytime
+        - cryptographic hash - one way function, cannot reverse output to get input
+            - abs function is one way
+
+        Python hashing
+        ==============
+        - built in function called hash
+            - cannot hash mutable data types
+            - dictionaries and sets use a hashing function for keys
+
+        Salting
+        =======
+        - Prevents reverse lookup of hash
+        - Salt is a random string introduced during hashing
+        - Attackers need to guess salt + password
+        - Concatenated to the password and hashed together
+        - Two people with the same password will have differnt hashes
+
+
+
+        Algorithms
+        ==========
+        - Cryptographic Hashes
+            - MD5
+            - SHA
+            - Fast, non reversible
+        - Password hashing
+            - Argon2
+            - Bcrypt
+            - Scrypt
+            - Slower
+
+
+        Python Bcrypt
+        =============
+        - pip install bcrypt
+        - salt = bcrypt.gensalt()
+        - b'$2b$12$hashed_salthashed_password
+        - binary string
+        - 2b - bcrypt identifier
+        - 12 rounds, work factor
+        - 21 characters salt hash
+        - 31 characters password hash
+
+
+        Flask Bcrypt
+        ============
+        - pip install flask-bcrypt
+        - from flask_bcrypt import Bcrypt
+        - bcrypt.generate_password_hash('password')
+        - hashed_utf8 = hashed.decode('utf8')
+            - store in database
+        - bcrypt.check_password(hash, 'password')
+        - define function as methods as classmethods
+
+
+        User Session
+        ============
+        - Store user_id in session
+            - Can store user in g.user
+
+
+    </pre>
+</body>
+</html>

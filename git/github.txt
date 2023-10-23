@@ -1,0 +1,75 @@
+Notes
+=====
+'$' is the command line terminal waiting for input. Do include '$' when entering commands.
+
+'<username>' means to replace with your username, but do not include '<' and '>
+
+Following commands in these instructions are for Linux and should work in Git Bash. GitHub 
+Reference links: 
+----------------
+https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+
+
+1. Generate a new SSH key.
+$ ssh-keygen -t ed25519 -C "your_email@example.com"
+
+2. It will ask what to save the file as. Just hit Enter to save as the default.
+"Enter a file in which to save the key..."
+
+3. It will then ask to set up a passphrase. Just hit Enter to skip.
+"Enter passphrase..."
+
+4. It will ask again. Hit Enter again.
+"Enter the same passphrase again..."
+
+4.5. Two new files are generated inside the ~/.ssh folder.
+One file is id_ed25519 (private key file), the other is id_e25519.pub (public key file)
+$ ls -al ~/.ssh
+
+5. Start the ssh-agent in the background.
+$ eval "$(ssh-agent -s)"
+
+6. Add the SSH private key to the ssh-agent.
+$ ssh-add ~/.ssh/id_ed25519
+
+7. Copy the contents of the public key file.
+$ cat ~/.ssh/id_ed25519.pub
+
+Prints something like the below, copy it (highlight and then ctrl+c)
+"ssh-ed25519 gibberish your-email@example.com"
+
+8. Login into GitHub on your browser.
+
+9. Go to Settings
+
+10. Under Access, click SSH and GPG keys.
+
+11. Click the green button: 'New SSH Key'
+
+12. Paste the copied key into the textarea for 'Key'
+
+13. Enter a 'Title'. Name it whatever you want like 'Home Laptop'
+
+14. Confirm by clicking the green button: 'Add SSH key'
+
+15. Open the known_hosts file found in the same directory as the SSH keys.
+code ~/.ssh/known_hosts
+
+16. Append the following text at the end of the file.
+github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
+
+17. Save it
+
+
+Pairing Local (Git) to Remote (GitHub)
+======================================
+2 ways to do this
+
+Way 1
+-----
+$ git clone git@github.com:<username>_here/<githuRepoName>_name.git
+- The local repository has been initialized

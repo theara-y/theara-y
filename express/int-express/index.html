@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        npm install bcrypt
+        require('bcrypt')
+        bcrypt.hash(password, work-factor) -> Promise
+        bcrypt.compare(password, hash) -> Promise
+
+        postgres.error.code
+
+        JSON Web Tokens (JWT)
+        =====================
+        - make a request to async login route
+        - server authenticates and returns a token in JSON
+            - encoded and signed with open standard JWT
+        - frontend receives token and stores it
+        - browser sends token every request
+        - server receives token and validates
+
+        - are an open standard and implemented across technology stacks, simple to share across different services
+        - can store any arbitrary 'payload' of info which are signed using a secret key, so they can be validated later
+
+        - jwt homepage
+        - header
+            - metadata about token
+            - signing algorithm and type of token
+        - payload
+            - data to be store (typically an object)
+            - encoded, not encrypted (do not put secret data)
+            - such as user id, username, last signin
+            - iat token issued time
+            - header and payloaod encoded in base64
+        - signature
+            - version of header and payload
+            - signed with secret key
+            - uses the algorithm specified in the header
+            - verify origins or identity of sender
+
+        npm install jsonwebtoken
+        jwt.sign(payload, secret, jwt-options) -> string token
+            - payload object to store
+            - secret string
+            - optional object of settings for making the token
+            - {expiresIn: 60} // mins
+        jwt.verify(token, secret)
+            - return payload object
+            - raise error on failure
+        jwt.decode(token)
+            - return payload object
+
+        - protected routes
+        - token sent with every request to show login verified
+        - _token in req.body
+
+
+        Authorization middleware
+        ========================
+        function authenticateJWT(req, res, next) {
+            req.body._token
+            paylod = verify
+            req.user = payload //user set in request
+            next
+            catch(err)
+            next
+        }
+        function ensureLoggedIn(req, res, next) {
+            if(!req.user) throw next
+            else next
+        }
+        module.exports = { authenticateJWT, ensureLoggedIn }
+
+        // Using it
+        app.use(authenticateJWT)
+        router.get('/', ensureLoggedIn, middleware)
+
+
+        Testing
+        =======
+        - app, supertest, jsonwebtoken, bcrypt
+        - work factor set to 1
+
+        beforeEach(() => {
+            get hashed password from bcrypt
+            insert users with hash
+            generate signed token
+        }
+
+        test() {
+            send(_token)
+            expect(res.body).toEqual(
+                expect.objectContaining({
+                    token: expect.any(String)
+                })
+            )
+        }
+
+        JSON Schema
+        ===========
+        - user data fails first before getting to db
+        - reduce code for processing and validation
+        - validation system easy to set up and maintain
+
+        - standard specification for describing JSON in a human and machine readable format
+        - standard is how something should work or be structured 
+        - json-schema.org
+        
+        - npm i jsonschema
+        - require('jsonschema')
+        - validate(value, {schema}) -> object.valid -> boolean
+        - { type: 'string' }
+        -   { 
+                type: 'object', 
+                properties: { 
+                    prop1: {type: 'number', minimum: 0, maximum: 100}
+                }, 
+                required: [ 'property' ]
+            }
+        - jsonschema.net
+            - generate JSON schema
+            - put in schemas folder
+            - ValidatorResult
+                - valid
+                - errors []
+                    - ValidationError
+                        - stack
+        - ajv-errors
+
+        Testing Practices
+        =================
+        - place how to run tests in readme
+        - test the api
+        - test driven development
+            - write tests first
+            - write the code necessary to pass, minimum
+            - red, green, refactor
+            - smaller, modular, testable
+            - con slows development
+        - mocking
+            - primarily in unit testing
+            - object might have dependencies
+            - isolate behavior, simulate behavior
+            - can be faster
+                - avoid rate limits
+                - avoid api calls
+            - makes tests pure
+            - can be complicated to set up
+            - not always necessary
+
+        Mocking in Jest
+        ===============
+        const mockCallback = jest.fn(callback)
+        mockCallback.mock.calls.length // how many times it was called
+
+        Math.random = jest.fn(() => 0.5);
+        expect(Math.random).toHaveBeenCalled();
+
+        jest.mock('axios');
+        axios.get.mockResolvedValue({resp});
+        return Users.all().then(d => expect(d).toEqual(d))
+
+        - can mock ajax
+        - mock reading and writing to files
+        - impure functions like Math.random
+
+        Continuous Integration
+        ======================
+        - merge small changes frequently
+        - build faster and better by developing and testing in smaller increments
+        - automate test runs
+        - reject deployments if tests fail
+        - notify when there are changes to test
+        - vcs -> trigger ci build
+        - ci server -> runs tests -> success? -> build
+        - deployed on app server
+        - integrates with github and execute a series of tasks to build and test code
+        - Travis CI
+        - Jenkins
+        - Circle CI
+        - Buddy
+
+        End to End Testing
+        ==================
+        - find user impacting issues
+        - not maintainable
+        - time consuming to write
+        - selenium
+        - cypress
+
+        
+        Templating in Express
+        =====================
+        - Nunjucks
+            - nunjucks.configure('templates', {
+                autoescape: true,
+                express: app
+            })
+            - res.render('index.html', {props})
+        - Pug
+
+        Statics
+        =======
+        app.use(express.static('dir'))
+        href=file // served from root that was set up
+
+        Helmet
+        ======
+        npm i helmet --save-dev
+        app.use(helmet())
+
+
+        Passport
+        ========
+        third-party login
+
+        Cookie Parser
+        =============
+        npm i cookie-parser
+        app.use(cookieparser())
+        req.cookies
+        res.cookie('key', 'value')
+        res.send(req.cookies)
+
+        Other Node frameworks
+        =====================
+        - Koa
+        - Hapi
+        - Sails 
+
+
+        module.exports {
+            'GET /': {action: 'view'}
+        }
+
+        MomentJS
+            - formatting time
+        ValidatorJS
+            - replace regex
+        Lodash
+            - function for objects, arrays, functions
+
+        npm scripts
+
+        MongoDB
+        =======
+        - non relational
+        - unstructured/recursive data
+        Redis
+        =====
+        - non relational
+        - key/value
+        - fast and scalable
+        - can't hold everything, can be used as an intermediary before database
+        - check redis then db
+
+
+        Websockets
+        ==========
+        - tiny and stateful
+        - stays connected
+
+        // client.js
+        const ws = new WebSocket('ws://localhost:3000/chat')
+        ws.onopen = function(event) {}
+        ws.onmessage = function(event) {}
+        ws.onclose = function(event) {}
+
+        // server.js
+        ew = express-ws(app)
+        app.ws('/chat', (r, r, n) => {
+            ws.on('open', () => {})
+            ws.on('message', () => {})
+            ws.on('close', () => {})
+            ws.send()
+        })
+
+        ew.getWss().clients.forEach(client => {
+            if(client.readyState === 1)
+                client.send()
+        })
+
+    </pre>
+</body>
+</html>

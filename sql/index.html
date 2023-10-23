@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL</title>
+</head>
+<body>
+    <pre>
+        What is a database?
+        ===================
+        - A database is a collection of data organized to be efficiently stored, access, and managed.
+        - Database can refer to the database server software, the data records, or the physical machine that holds data.
+        - Benefits
+            - Data is stored, managed, and accessed efficiently.
+            - Configure different levels of authorizations
+        - Database in the web stack
+            - Client (Frontend)
+                - Client sends a request
+                - Receives a response from the server
+                - HTML, CSS, JS, JQuery, React, Angular, Vue
+            - Server (Backend)
+                - Server listens for request
+                - Queries the database for requested data
+                - Build a response to send back to the client
+                - Flask, Django, Ruby on Rails, Node.js, Express.js, Java, Spring
+            - Database (Backend)
+                - Stores data
+                - Provides the server with data
+                - PostgreSQL, MySQL, SQLite, MongoDB, Cassandra, OracleDB, Redis, RDMS, NoSQL
+
+        Relational Database
+        ===================
+        - Model data as rows and columns of tabular data
+            - Tables
+            - Spreadsheets
+        - Relational Database Management System (RDBMS)
+            - Software/interface that is run to communicate queries
+        - Schema
+            - A logical representation of database including its tables, columns, data types, constraints
+        - Table
+            - A set of column or rows like a spreadsheet
+        - Column
+            - A table attribute 
+        - Row
+            - A table record with a set of values for columns 
+
+
+        PostgreSQL
+        ==========
+        - Open source RDBMS
+        - Powerful, popular, follows SQL standard closely
+        - database files is distributed elsewhere on the machine
+        - psql
+        - Seeding a database
+            - Feeding data into a database
+        - SQL
+            - Structured Query Language
+            - human readable language used to query relational databases
+            - Strings are case-sensitive
+            - Single quotes
+            - End commands with semi-colon ;
+            - ALL_CAPS for keywords, but is not required
+
+        Installing PostgreSQL
+        =====================
+        - psql
+            - a terminal based program for issuing database commands
+        $ sudo apt-get install postgresql
+        $ sudo service postgresql status
+        $ sudo service postgresql start
+        $ sudo service postgresql stop
+        $ psql
+        $ psql database_name
+        $ psql < my_script.sql
+        $ sudo -u postgres createuser -s $(whoami);
+            - using postgres user create new user with super roles called $(whoami)
+        $ sudo -u postgres createuser test
+        $ sudo -u postgres dropuser test
+        $ createuser --interactive
+        psql$ ALTER USER username WITH PASSWORD password
+        psql$ ALTER USER username WITH ENCRYPTED PASSWORD password
+        psql$ GRANT ALL PRIVILEGES ON DATABASE lunchly TO testuser;
+        psql$ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO testuser;
+        psql$ SELECT schema_name FROM information_schema.schemata
+        $ createdb database_name
+        $ dropdb database_name
+        $ pg_dump -C -c -O database_name > backup.sql
+        psql$ \l                    // List databases
+        psql$ \q                    // Quit terminal/Ctrl+D 
+        psql$ \c database_name      // Connect
+        psql$ \dt                   // List tables
+        psql$ \d table_name         // Table details
+        psql$ \d+ table_name        // List cols and types
+        psql$ \du
+        psql$ \i data.sql
+        psql$ SQL_QUERY
+
+        \c database
+        GRANT USAGE, SELECT ON SEQUENCE cities_id_seq TO www;
+        GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO testuser;
+
+
+        Data Definition Language (DDL)
+        ==============================
+        -- comments
+        DROP DATABASE IF EXISTS database_name;
+        CREATE DATABASE database_name;
+        \c database_name
+        CREATE TABLE table_name
+        (
+            id SERIAL PRIMARY KEY,
+            name TEXT VARCHAR(2) NOT NULL UNIQUE,
+            age INTEGER CHECK (age <= 200),
+            price FLOAT(2) NULL,
+            modified DATE, TIMESTAMP
+            flag BOOLEAN,
+            ref_key INTEGER REFERENCES table_name (id) ON DELETE CASCADE
+        );
+        DROP TABLE table_name;
+
+        DATA TYPES
+        NULL
+        CONSTRAINTS
+            - Form of validation
+        DEFAULT
+            - Set to NULL
+        ON DELETE SET NULL | ON DELETE CASCADE
+
+        ALTER TABLE table_name
+            ADD COLUMN column_name TYPE CONSTRAINTS
+            DROP COLUMN column_name
+            RENAME_COLUMN column_name TO column_name
+
+        Crow's Foot Notation
+        ====================
+        - Entity Relationship Diagram to represent schemas
+        - Relationship
+
+        Normalization
+        =============
+        - Organize table to reduce redundancy and dependency
+        - Break tables down into smaller ones and create relationships
+
+        Indexing
+        ========
+        - Data structure that efficiently stores column values to speed up row retrieval via SELECT and WHERE
+        - In general, database software use tree data structures to store data so that it can be retrieved in O(log n)
+        - Tradeoff increased memory usage, copy of a column is stored in a tree structure and inserts and updates become more expensive
+        - CREATE INDEX index_name ON table_name (column_name)
+            - Can be used anytime
+            - More data = more time to create index
+        - DROP INDEX index_name
+
+        Data Manipulation Language (DML)
+        ================================
+        - A subset of SQL that involves querying and manipulating records
+        - CRUD
+            - Create,   INSERT INTO
+            - Read,     SELECT ... FROM
+            - Update,   UPDATE ... SET
+            - Delete,   DELETE FROM
+        - SELECT 2 + 5;
+
+        Operators
+            - =, >, >=, <, <=, !=, <>
+            - IN, NOT IN, BETWEEN, AND, OR
+            - LIKE, ILIKE (Not Standard), a%, a_
+            - AS (optional)
+
+        SELECT */cols FROM table_name
+            - Subclauses
+                1: FROM, JOIN
+                2: WHERE
+                3: GROUP BY
+                    - Used with aggregate functions
+                4: SELECT (Required)
+                    - AGGREGATE: MAX, MIN, SUM, COUNT, AVG
+                5: HAVING
+                6: ORDER BY
+                    - col ASC|DESC
+                7: LIMIT
+                8: OFFSET
+
+        INSERT INTO table_name
+            (col1, col2, col3, col4...)
+        VALUES
+            (r1c1, r1c2, r1c3, r1c4...),
+            (r2c1, r2c2, r2c3, r2c4...);
+
+        UPDATE table_name
+        SET col = val
+        WHERE expression;
+
+        DELETE FROM table_name
+        WHERE expression;
+
+        Relationships
+        =============
+        - Normalization
+            - Reducing redundancy
+        - Primary Key, Foreign Key
+        - One-to-Many
+            - a has many b's
+            - b's has only one a
+            - b is referencing, a is referenced
+        - Many-to-Many
+            - Intermediate table
+
+        JOINS
+        =====
+        - Creates a table in memory by combining tables
+        - Data from table is matched according to a join condition 
+        - Commonly joined on primary and foreign keys
+        - Inner Join | Join
+            - Only rows that match the condition in both tables
+        - Outer
+            - Left
+                - All rows from the first table combined with matching rows in the second table
+            - Right
+                - All rows from the second table combined with matching rows in the first table
+            - Full
+                - All rows from both tables
+
+
+        deploy on render
+        ================
+
+        elphantSQL
+
+        $ pg_dump -O warbler | psql (url you copied here)
+        $ psql (url you copied here)
+
+        pip install gunicorn
+
+        pip freeze > requirements.txt
+
+        create a render account
+        web service on dashboard
+        connect to repository, must be owned by you
+        start command is gunicorn app:app
+        add environment variables in advanced settings
+        DATABASE_URL, url from elphantsql postgre -> postgresql
+        SECRET_KEY, generate
+        PYTHON_VERSION, 3.7.17
+
+
+
+
+
+
+    </pre>
+</body>
+</html>

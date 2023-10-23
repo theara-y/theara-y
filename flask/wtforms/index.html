@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTForms</title>
+</head>
+<body>
+    <pre>
+        Writing Forms
+        =============
+        - Writing the HTML
+        - Server-side validation
+        - Adding logic to show validition results
+        - Adding protection against security attacks
+
+
+        WTForms
+        =======
+        - Python library
+        - Validation
+        - HTML Production
+        - Security
+
+        
+        Flask-WTF
+        =========
+        - Built on top of WTForms to integrate with Flask
+        - $ pip install flask-wtf
+
+
+        Defining a Form
+        ===============
+        - Define a class that extends FlaskForm
+        - Define Fields
+            - Define the label
+            - A list of validators if any
+        - Types of Fields
+            - StringField
+            - TextAreaField
+            - PasswordField
+            - BooleanField
+            - DateField
+            - DateTimeField
+            - DecimalField
+            - IntegerField
+            - RadioField(label, choices = [...(value, label)])
+                - for subfield in form.radio
+                - form.fieldname.choices = [...(value, label)]
+            - SelectField
+            - FileField
+
+        from flask_wtf import FlaskForm
+        from wtforms import StringField, PasswordField
+        class LoginForm(FlaskForm):
+            username = StringField('Username')
+            password = PasswordField('Password')
+
+
+        Using the Form in routes 
+        ========================
+        - Create an instance of the form
+        - Pass the form instance to render_template to render the form
+        - form data will autocast to defined types instead of strings
+        // app.py
+        @app.route('/')
+        def login():
+            form = LoginForm()
+            if form.validate_on_submit:
+                form.username.data
+                form.password.data
+            return render_template('login.html', form=form)
+
+
+        Using the Form in Templates
+        ===========================
+        - form.field.label()
+        - form.field()
+        - form.hidden_tag()
+        - form.field.errors
+
+
+        Cross-Site Request Forgery
+        ==========================
+        - Attack where request is submitted by a trusted user that the user didn't intend to make
+        - CSRF token is generated on the server
+        - Included in the HTML form
+        - Server validates the token on request
+        - form.hidden_tag()
+        - form.validate_on_submit()
+
+        Validators
+        ==========
+        - from wtforms.validators import InputRequired...
+        - Types of Validators
+            - InputRequired(message = 'Custom Error message')
+            - DataRequired
+            - Length
+            - Optional
+        - Errors found in form.fieldname.errors
+        - Custom validators
+            - function prefixed with validate_
+
+
+        Form Data Population
+        ====================
+        - SomeForm(obj = {})
+        - SomeForm(obj = SQLAlchemy.Model)
+        - form.fieldname.data = someData
+
+
+        Styling Forms
+        =============
+        form.fieldname(class_="any classes")
+
+
+        Testing
+        =======
+        - CSRF needs to be disabled
+            - app.config['WTF_CSRF_ENABLED'] = False
+        - form data as an object {'name': 'Alice'}
+        - pass the form data to client.post('/some-route', data=formdata)
+    </pre>
+</body>
+</html>

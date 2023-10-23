@@ -12,6 +12,102 @@
     </ul>
 
     <pre>
+        Python
+        ======
+        - high-level language
+        - dynamic - code that can create functions and classes
+        - dynamically-typed
+        - strongly-typed type errors on operations of different types
+        - compiled
+
+        Dynamic functions and classes
+        =============================
+        def __init__(self, dynamic_name):
+            self.dynamic_name = dynamic_name
+            def my_fn(self):
+                print(self.dynamic_name)
+
+        bound_method = my_fn.__get__(self, self.__class__)
+        setattr(self, self.dynamic_name, bound_method)
+
+
+        Compiled
+        ========
+        - Python code is compiled into byte code
+        - Compilation happens on running and importing 
+        - import dis
+            - help(dis)
+            - dis.dis(adder)
+            - dis.dis('app.py')
+        - __pycache__
+            - previously compiled code as byte code
+            - updates only changed files
+            - saves compile time
+            - .pyc extension
+
+        Type Hinting
+        ============
+        - type hints come after colon when defining variables
+        - def adder(x: int, y: int) -> int:
+        - helps autocomplete when using vscode or repl
+
+
+        Generators
+        ==========
+        - like using an iterator with next
+        - saves memory, data too big to hold in memory
+        - generators can yield infinitely
+
+        def generateNumber(n):
+            current = 0
+            while current < n:
+                yield current
+                current += 1
+
+        iterator = generateNumber(100)
+        next(iterator) // next yielded number
+
+
+        Overloading Operators
+        =====================
+        class MyString(str): // extends str
+
+            def __eq__(self, other): // override eq
+                return 'overriden result'
+
+
+        The Python Standard Library
+        ===========================
+        - Google it
+        - queues, stacks
+        - binary search trees
+        - statistics
+        - complex numbers, fractions, math
+        - functional programming helpers
+
+        Other libraries 
+        ==============
+        - Beautiful Soup
+            - Web scraper
+            - useful for getting data
+        - Numpy
+            - linear algebra and matrix
+        - Pandas
+            - Data slicing grouping
+        - SciKit-Learn
+            - Machine Learning algorithm
+        - scipy lecture notes
+
+
+        Jupyter
+        =======
+        - interactive computing
+        - Like ipython in a webpage
+        - Mix documentation, drawings, code snippets
+        - used to play with data or share analyses
+        - can publish on web
+        
+
         __repr__
         ========
         - Can overwrite this method on classes to change how to display an object
@@ -22,6 +118,34 @@
 
             def __repr__(self):
                 return f'User: {self.alice}'
+
+
+        Progamming Paradigms
+        ====================
+        - Procedural
+            - Linear, step by step tasks
+            - tasks encapsulated into modular procedures such as functions
+            - procedure, routine, subroutine
+        - Object-oriented
+            - Concept of objects
+            - attributes, states, properties
+            - methods, behavior
+        - Functional
+            - pure functions, avoidance of side effects, immutable data
+
+        OOP
+        ===
+        - classes are blueprints used to create instances of objects
+        - classes as custom data types or data structures
+        - inheritance
+            - child inherits parent, subclass extends superclass, sharing base 
+            - super().__init__()
+        - everything in Python is an object
+            - except variables
+
+        Abstract data types
+        ===================
+        
 
 
     </pre>

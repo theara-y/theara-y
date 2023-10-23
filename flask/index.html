@@ -191,6 +191,7 @@
             - jsonify returns a response object with content-type of application/json
             - jsonify(obj).get_json()
             - jsonify(obj).content_type
+            - to jsonify a model, define a serialize method
 
         // app.py
         from flask import jsonify
@@ -262,7 +263,7 @@
             html = render_template('index.html')
             resp = make_response(html)
             resp.set_cookie('name', 'value')
-            return resp
+            return resp, 200
 
 
         Flask Session
@@ -338,8 +339,32 @@
                     self.assertEqual(session['count'], 1000)
 
 
+        Testing API
+        ===========
+        - Test response.json with expected value
 
 
+
+        Flask Others 
+        ============
+        - url_for
+        - blueprints
+        - signals
+        
+        Flask Add-Ons
+        =============
+        - WTForms-Alchemy
+        - Flask-Login
+        - Flask-Mail
+        - Flask-Admin
+        - Flask-Restless
+
+        Flask vs Django
+        ===============
+        - Django more opinionated and higher level
+        - Higher learning curve
+        - Faster development
+        - Hard to debug
 
 
     </pre>
